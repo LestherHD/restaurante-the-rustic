@@ -16,7 +16,14 @@ export async function POST(request: Request) {
   try {
     await dbConnect();
     const body = await request.json();
-    const drink = await Drink.create(body);
+    
+    // Asegurar que totalUnits se calcule correctamente
+    const drinkData = {
+      ...body,
+      totalUnits: (body.totalBoxes || 0) * (body.unitsPerBox || 1)
+    };
+    
+    const drink = await Drink.create(drinkData);
     return NextResponse.json(drink, { status: 201 });
   } catch (error) {
     return NextResponse.json({ error: 'Error al crear bebida' }, { status: 500 });

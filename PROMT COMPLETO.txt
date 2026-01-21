@@ -1,0 +1,972 @@
+🧩 MÓDULOS DEL BACKEND ADMINISTRATIVO
+🔐 A. ADMINISTRACIÓN DE USUARIOS Y SEGURIDAD
+Alcance
+
+Gestión total de accesos y auditoría.
+
+Funcionalidades
+
+Creación de usuarios
+
+Asignación de roles (Administrador / Mesero)
+
+Activar o desactivar usuarios
+
+Restablecer credenciales
+
+Registro de actividad por usuario:
+
+Acciones realizadas
+
+Fecha y hora
+
+Elemento afectado
+
+Regla Crítica
+
+Ningún usuario puede operar sin credenciales activas.
+
+📦 B. INVENTARIO GENERAL
+Alcance
+
+Control de insumos, ingredientes y bebidas.
+
+Incluye
+
+Registro de insumos con:
+
+Nombre
+
+Unidad de consumo
+
+Costo unitario
+
+Stock actual
+
+Stock mínimo
+
+Registro de bebidas con:
+
+Marca
+
+Presentación
+
+Unidades por empaque
+
+Precio de venta
+
+Costo unitario
+
+Movimientos de inventario:
+
+Entradas
+
+Salidas
+
+Ajustes
+
+Registro obligatorio de:
+
+Motivo
+
+Usuario responsable
+
+Comentarios
+
+🚨 C. ALERTAS DE INVENTARIO
+Alcance
+
+Prevención de desabasto.
+
+Funcionalidades
+
+Definición de stock mínimo
+
+Alertas visuales cuando:
+
+Stock bajo
+
+Stock agotado
+
+Vista consolidada de productos críticos
+
+🍽️ D. CATEGORÍAS DE PLATOS
+Alcance
+
+Organización del menú.
+
+Atributos
+
+Nombre
+
+Orden de visualización
+
+Visible al público (Sí / No)
+
+Activa / Inactiva
+
+Regla Importante
+
+Si una categoría NO está visible al público, ningún plato dentro de ella puede mostrarse, aunque el plato esté activo.
+
+🍽️ E. PLATOS
+Alcance
+
+Definición de productos finales vendibles.
+
+Atributos
+
+Nombre
+
+Descripción
+
+Categoría
+
+Precio de venta
+
+Costo de producción (automático)
+
+Visible al público (interruptor)
+
+Activo / Inactivo
+
+Regla de Visibilidad
+
+Un plato solo se muestra al público si:
+
+El plato está activo
+
+El plato está marcado como visible
+
+Su categoría está visible
+
+🍽️ Flujo de Platos y Recetas – Explicación Operativa
+
+Este sistema sirve para definir qué platos se venden, cómo se preparan, cuánto cuesta hacerlos y cuánto se gana con cada uno, manteniendo control y consistencia en la cocina.
+
+Todo gira alrededor de platos, recetas, subrecetas e ingredientes.
+
+🍽️ ¿QUÉ ES UN PLATO?
+
+Un plato es el producto final que se le entrega al cliente y por el cual paga.
+
+Cada plato tiene:
+
+Un nombre y una descripción
+
+Una categoría (por ejemplo: entradas, platos fuertes, postres)
+
+Un precio de venta al público
+
+Un costo de producción que se calcula automáticamente
+
+Un estado que define si está activo o no
+
+Una opción para mostrarse o no en el menú público
+
+Ejemplos de platos:
+
+Skillet El Rey
+
+Crema de jalapeño
+
+Hamburguesa clásica
+
+El plato no se prepara “al aire”, siempre depende de una receta.
+
+📖 ¿QUÉ ES UNA RECETA?
+
+Una receta es la forma exacta de preparar un plato, indicando:
+
+Qué ingredientes se usan
+
+En qué cantidad se usa cada uno
+
+Hay dos tipos:
+
+Receta de plato
+
+Es la receta principal que define cómo se hace un plato específico.
+
+Subreceta
+
+Es una preparación intermedia que se usa en varios platos, como:
+
+Salsas
+
+Aderezos
+
+Cremas
+
+Guarniciones
+
+Las recetas pueden tener versiones:
+
+Versión 1
+
+Versión 2
+
+Versión 3
+
+Esto permite mejorar o ajustar sin borrar el historial.
+
+Cada receta puede estar:
+
+Activa (la que se usa)
+
+Inactiva (solo referencia histórica)
+
+🧩 ¿QUÉ ES EL DETALLE DE UNA RECETA?
+
+Es cada línea dentro de una receta.
+
+Cada línea indica:
+
+Qué se usa (ingrediente o subreceta)
+
+Cuánta cantidad se usa
+
+Ejemplo:
+
+300 gramos de carne
+
+100 gramos de queso
+
+1 porción de salsa BBQ
+
+Cada línea aporta un costo al plato.
+
+🔄 ¿CÓMO SE RELACIONA TODO?
+
+Explicado de forma simple:
+
+Las categorías agrupan platos
+
+Los platos usan recetas
+
+Las recetas están hechas de ingredientes y subrecetas
+
+Las subrecetas también están hechas de ingredientes
+
+Todo está conectado para que un solo cambio se refleje en todo lo que depende de él.
+
+⚙️ FLUJO NORMAL DE TRABAJO
+1️⃣ Registrar ingredientes
+
+Primero se registran todos los ingredientes que se usan en cocina.
+
+Ejemplos:
+
+Carne de res
+
+Queso cheddar
+
+Tomate
+
+Papas
+
+Ketchup
+
+Miel
+
+Vinagre
+
+Cada ingrediente tiene:
+
+Una unidad de uso (gramos, mililitros, piezas)
+
+Un costo de compra
+
+Estos costos son la base de todo.
+
+2️⃣ Crear subrecetas (cuando aplica)
+
+Si hay preparaciones que se repiten en varios platos, se crean como subrecetas.
+
+Ejemplo:
+
+Salsa BBQ casera
+
+La salsa BBQ se define una sola vez, con:
+
+Sus ingredientes
+
+Sus cantidades
+
+Su costo total
+
+Después se puede usar en muchos platos sin volver a escribir todo.
+
+Esto ahorra tiempo y evita errores.
+
+3️⃣ Crear categorías de platos
+
+Antes de crear platos, se organizan por categorías.
+
+Ejemplos:
+
+Entradas
+
+Platos fuertes
+
+Postres
+
+Especialidades
+
+Las categorías ayudan a:
+
+Ordenar el menú
+
+Mostrar u ocultar grupos completos de platos
+
+4️⃣ Crear el plato
+
+Aquí se define:
+
+El nombre del plato
+
+Su descripción
+
+La categoría
+
+El precio de venta
+
+Si estará visible al público
+
+Si estará activo
+
+En este punto todavía no se define el costo, porque eso lo da la receta.
+
+5️⃣ Crear la receta del plato
+
+Finalmente se define cómo se prepara el plato.
+
+Se agregan:
+
+Ingredientes
+
+Subrecetas
+
+Cantidades exactas
+
+Con eso, el sistema:
+
+Calcula el costo total
+
+Asocia ese costo al plato
+
+Ejemplo:
+
+Precio de venta: $180
+Costo de producción: $55
+Ganancia: $125
+
+📊 CASOS REALES
+Plato simple
+
+Un plato sencillo usa solo ingredientes básicos.
+
+Ejemplo:
+
+Hamburguesa clásica
+
+Se suman los costos de:
+
+Pan
+
+Carne
+
+Queso
+
+Verduras
+
+Eso da el costo total del plato.
+
+Plato con subreceta
+
+Un plato más elaborado puede usar una subreceta.
+
+Ejemplo:
+
+Tacos de res
+Pizza BBQ
+
+Ambos usan la misma salsa BBQ.
+
+Si mañana cambia la receta de la salsa:
+
+Cambia automáticamente el costo de ambos platos
+
+Versiones de receta
+
+Si se mejora un plato:
+
+La receta vieja se deja inactiva
+
+Se crea una nueva versión
+
+Solo la versión activa se usa para costos
+
+Esto permite:
+
+Comparar antes y después
+
+Saber cómo ha cambiado el costo con el tiempo
+
+💰 ¿CÓMO SE CALCULA EL COSTO?
+
+El costo del plato es:
+
+La suma de todos los ingredientes
+
+Más el costo de las subrecetas que use
+
+No se escribe a mano.
+Siempre se calcula solo.
+
+Con ese costo se obtiene:
+
+Ganancia por plato
+
+Margen de ganancia
+
+🔄 ¿QUÉ PASA SI CAMBIA EL PRECIO DE UN INGREDIENTE?
+
+Ejemplo:
+
+El queso sube de precio
+
+Automáticamente:
+
+Sube el costo de la receta
+
+Sube el costo del plato
+
+Cambia la ganancia
+
+No hay que rehacer nada.
+El sistema lo recalcula.
+
+
+🥤 F. BEBIDAS
+Alcance
+
+Venta directa sin receta.
+
+Atributos
+
+Nombre
+
+Marca
+
+Presentación
+
+Precio de venta
+
+Costo unitario
+
+Visible al público (interruptor)
+
+Activa / Inactiva
+
+🥤 Flujo de Bebidas e Inventario – Explicación Operativa
+
+Este sistema sirve para controlar bebidas, saber cuántas hay, cuánto cuestan, cuánto se gana con cada una y evitar quedarte sin producto durante la operación.
+
+Todo gira alrededor de bebidas, movimientos de inventario y control de stock.
+
+🔑 ¿QUÉ ES UNA BEBIDA?
+
+Una bebida es cualquier producto líquido que se vende directamente al cliente, como refrescos, cervezas, jugos o agua.
+
+Cada bebida tiene información básica obligatoria:
+
+Su nombre (para identificarla)
+
+Su marca
+
+Su presentación física (por ejemplo: lata, botella, paquete)
+
+Cuántas unidades trae cada caja o empaque
+
+Cuántas unidades hay disponibles actualmente
+
+Cuál es el mínimo aceptable antes de reabastecer
+
+Cuánto cuesta comprarla
+
+A cuánto se vende al cliente
+
+Si está activa o no para la venta
+
+Ejemplo explicado:
+
+Coca Cola en lata
+Cada caja trae 24 latas
+Actualmente hay 120 latas
+El mínimo permitido es 48 latas
+Cada lata cuesta $8.50
+Se vende a $15.00
+
+Esto permite saber qué se tiene, cuánto vale y cuándo comprar más.
+
+🔄 ¿QUÉ ES UN MOVIMIENTO DE INVENTARIO?
+
+Un movimiento es cualquier cambio que haga que el stock suba o baje.
+
+Hay tres tipos:
+
+1. Entrada
+
+Cuando entra producto al negocio
+Ejemplos:
+
+Compra a proveedor
+
+Devolución
+
+Bonificación
+
+2. Salida
+
+Cuando sale producto del inventario
+Ejemplos:
+
+Venta al cliente
+
+Consumo del personal
+
+Producto dañado
+
+Cortesía
+
+3. Ajuste
+
+Cuando el sistema no coincide con la realidad
+Ejemplos:
+
+Conteo físico
+
+Merma no registrada
+
+Robo
+
+Error humano
+
+Cada movimiento debe dejar claro:
+
+Qué producto fue
+
+Qué tipo de movimiento fue
+
+Cuántas unidades se movieron
+
+Por qué ocurrió
+
+Quién lo registró
+
+Cuándo ocurrió
+
+Esto sirve para tener control y responsabilidad.
+
+⚙️ FLUJO NORMAL DE TRABAJO
+1️⃣ Dar de alta una bebida
+
+Primero se registra la bebida aunque no haya stock aún.
+
+Se deja el stock en cero y solo se define:
+
+Nombre
+
+Presentación
+
+Unidades por caja
+
+Precio de compra
+
+Precio de venta
+
+Stock mínimo
+
+Esto prepara el sistema para recibir producto después.
+
+2️⃣ Registrar una compra (entrada de inventario)
+
+Cuando llega mercancía, no se registran latas sueltas, se registran cajas.
+
+Ejemplo:
+
+Llegaron 10 cajas
+Cada caja trae 24
+El sistema automáticamente suma 240 unidades
+
+El sistema:
+
+Toma las cajas
+
+Las convierte a unidades
+
+Las suma al stock existente
+
+Así siempre se trabaja con números reales.
+
+3️⃣ Registrar una venta (salida de inventario)
+
+Cada vez que se vende una bebida:
+
+El sistema descuenta unidades
+
+No cajas completas necesariamente
+
+Puede quedar stock incompleto
+
+Ejemplo:
+
+Se vendieron 48 latas
+El stock baja automáticamente
+
+Esto puede hacerse:
+
+Manualmente (en control administrativo)
+
+Automáticamente cuando se registra una venta en el salón
+
+4️⃣ Ajustar inventario
+
+Cuando haces un conteo físico y notas diferencias:
+
+Ejemplo:
+
+El sistema dice 192 latas
+Físicamente solo hay 180
+
+Se registra un ajuste por la diferencia:
+
+Se explica el motivo
+
+Queda documentado
+
+El stock se corrige
+
+Esto evita errores acumulados.
+
+📦 ¿POR QUÉ SE TRABAJA CON CAJAS Y UNIDADES?
+
+Porque en la vida real:
+
+Compras por cajas
+
+Vendes por unidad
+
+El sistema hace la conversión automáticamente.
+
+Ejemplo:
+
+Compras 5 cajas → se convierten en 120 unidades
+
+Vendes 18 latas → se descuentan 18 unidades
+
+Para facilitar la lectura, el sistema muestra:
+
+Cuántas cajas completas hay
+
+Cuántas unidades sueltas quedan
+
+Así es más fácil visualizar el inventario.
+
+🚨 CONTROL DE STOCK MÍNIMO
+
+Cada bebida tiene un stock mínimo, que es el punto donde ya debes preocuparte.
+
+Ejemplo:
+
+Stock mínimo: 48 latas
+
+Stock actual: 45 latas
+
+El sistema avisa:
+
+“Esta bebida necesita reabastecimiento”
+
+Esto ayuda a:
+
+No quedarte sin producto
+
+Planear compras
+
+Evitar perder ventas
+
+📊 ¿CÓMO SE CALCULA EL STOCK MÍNIMO?
+
+Se basa en:
+
+Cuánto se vende al día
+
+Cuántos días tarda el proveedor
+
+Un margen de seguridad
+
+Ejemplo:
+
+Vendes 20 latas al día
+El proveedor tarda 2 días
+Quieres 1 día extra
+
+Stock mínimo recomendado:
+
+60 latas
+
+💰 CÁLCULO DE RENTABILIDAD
+
+Cada bebida permite saber:
+
+Cuánto se gana por unidad
+
+Qué porcentaje de ganancia deja
+
+Cuánto deja cada caja completa
+
+Ejemplo:
+
+Compras una lata a $8.50
+La vendes a $15.00
+Ganancia: $6.50 por lata
+
+Esto ayuda a:
+
+Identificar bebidas más rentables
+
+Ajustar precios
+
+Eliminar productos que no convienen
+
+📈 ANÁLISIS DE VENTAS
+
+El sistema permite ver:
+
+Qué bebidas se venden más
+
+Cuántas unidades se movieron
+
+Cuánto dinero generaron
+
+Esto sirve para:
+
+Saber qué pedir más
+
+Detectar productos lentos
+
+Tomar mejores decisiones
+
+📜 HISTORIAL Y AUDITORÍA
+
+Cada bebida tiene un historial completo:
+
+Cuándo se compró
+
+Cuándo se vendió
+
+Cuándo se ajustó
+
+Quién hizo cada acción
+
+Esto da:
+
+Transparencia
+
+Control
+
+Responsabilidad
+
+🎯 CASOS REALES DE USO
+Compra inicial
+
+Se registran bebidas
+
+Se registran compras
+
+El inventario queda listo
+
+No hay alertas
+
+Día normal
+
+Se venden bebidas
+
+El stock baja automáticamente
+
+Se revisa al cierre
+
+Se planea reabastecimiento
+
+Conteo mensual
+
+Se comparan números
+
+Se ajustan diferencias
+
+Se documenta merma
+
+El inventario vuelve a la realidad
+
+📖 G. RECETAS Y SUBRECETAS
+Alcance
+
+Control de preparación y costos.
+
+Funcionalidades
+
+Crear recetas versionadas
+
+Crear subrecetas reutilizables
+
+Activar o desactivar versiones
+
+Cálculo automático de costos
+
+Propagación automática de cambios
+
+💰 H. COSTOS Y RENTABILIDAD
+Alcance
+
+Análisis financiero interno.
+
+Incluye
+
+Costo real por plato
+
+Ganancia unitaria
+
+Margen porcentual
+
+Comparativas entre productos
+
+Detección de platos poco rentables
+
+📊 I. REPORTES Y DASHBOARD
+Alcance
+
+Información para toma de decisiones.
+
+Reportes
+
+Ventas por periodo
+
+Consumo de inventario
+
+Rentabilidad por plato
+
+Productos más vendidos
+
+Auditoría de acciones
+
+2️⃣ SISTEMA DE MESEROS
+(SEGUNDA ETAPA)
+🎯 OBJETIVO
+
+Facilitar la operación del salón, sin acceso a configuración ni datos sensibles.
+
+🧩 MÓDULOS DEL SISTEMA DE MESEROS
+🗺️ A. MAPA VISUAL DE MESAS
+Funcionalidades
+
+Visualización gráfica del salón
+
+Estados:
+
+Libre
+
+En atención
+
+Cerrando
+
+Persistencia de pedidos activos
+
+Transferencia de mesas
+
+📝 B. TOMA DE PEDIDOS
+Funcionalidades
+
+Ver solo platos y bebidas ACTIVOS y VISIBLES
+
+Asociar pedido a mesa y mesero
+
+Modificar pedidos abiertos
+
+Bloqueo de edición al iniciar cobro
+
+💳 C. COBRO Y CIERRE DE CUENTA
+Funcionalidades
+
+Cálculo automático:
+
+Total
+
+Impuestos
+
+Propina sugerida
+
+Métodos de pago:
+
+Efectivo
+
+Tarjeta
+
+Al cerrar cuenta:
+
+Descuento automático de inventario
+
+Registro del usuario responsable
+
+🚫 RESTRICCIONES DEL MESERO
+
+No puede ver costos
+
+No puede editar precios
+
+No puede modificar inventarios
+
+No puede ver reportes
+
+
+3️⃣ LANDING PAGE PÚBLICA
+(TERCERA ETAPA)
+🎯 OBJETIVO
+
+Mostrar información clara al cliente sin intervención manual.
+
+🧩 MÓDULOS DE LA LANDING
+🌐 A. MENÚ DIGITAL
+Muestra únicamente:
+
+Categorías visibles
+
+Platos visibles y activos
+
+Bebidas visibles y activas
+
+Regla Clave
+
+La landing no tiene lógica propia, solo refleja lo aprobado en administración.
+
+ℹ️ B. INFORMACIÓN GENERAL
+
+Horarios
+
+Ubicación
+
+Contacto
+
+Redes sociales (si aplica)
+
+🚫 RESTRICCIONES
+
+No permite pedidos
+
+No permite pagos
+
+No permite interacción administrativa
+
+
+SI DICHOS MODULOS YA EXISTEN REVISA QUE CUMPLEN DICHOS REQUISITOS, SI NO ARREGLOS 
+POR CADA MODULO O MODULOS SI SE NECESITARAN DE MAS PARA SU FUNCONAMIENTO HACER PRUEBAS ERROR, PARA CORREGIR Y LUEGO AVANZAR EN EL SIGUIENTE

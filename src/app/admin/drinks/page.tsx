@@ -257,7 +257,9 @@ export default function DrinksListPage() {
                         <div className="flex flex-col items-center">
                           <div className="flex items-center gap-1">
                             <Package2 size={14} className="text-gray-600 group-hover:text-blue-600" />
-                            <span className="font-bold text-gray-900">{drink.totalBoxes}</span>
+                            <span className="font-bold text-gray-900">
+                              {Math.floor(drink.totalUnits / drink.unitsPerBox)}
+                            </span>
                             <span className="text-xs text-gray-700">cajas</span>
                           </div>
                           <span className={`text-sm font-semibold ${
@@ -356,6 +358,12 @@ export default function DrinksListPage() {
           </div>
           <div className="bg-white rounded-lg shadow p-4">
             <p className="text-sm text-gray-600">Total Unidades</p>
+            <p className="text-2xl font-bold text-blue-600">
+              {drinks.reduce((sum, d) => sum + d.totalUnits, 0)}
+            </p>
+          </div>
+        </div>
+      </div>
 
       {/* Modal de Movimiento de Inventario */}
       {selectedDrinkForInventory && (
@@ -368,12 +376,6 @@ export default function DrinksListPage() {
           }}
         />
       )}
-            <p className="text-2xl font-bold text-blue-600">
-              {drinks.reduce((sum, d) => sum + d.totalUnits, 0)}
-            </p>
-          </div>
-        </div>
-      </div>
     </div>
   );
 }

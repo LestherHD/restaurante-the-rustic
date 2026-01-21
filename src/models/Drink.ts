@@ -105,12 +105,6 @@ const DrinkSchema = new Schema<IDrink>(
 
 // Calcular automáticamente antes de guardar
 DrinkSchema.pre('save', function() {
-  console.log(`\n--- HOOK PRE-SAVE ---`);
-  console.log(`totalBoxes antes del hook: ${this.totalBoxes}`);
-  console.log(`totalUnits antes del hook: ${this.totalUnits}`);
-  console.log(`isModified('totalBoxes'): ${this.isModified('totalBoxes')}`);
-  console.log(`isModified('totalUnits'): ${this.isModified('totalUnits')}`);
-
   // Calcular costo por unidad
   this.costPerUnit = this.costPerBox / this.unitsPerBox;
 
@@ -119,11 +113,8 @@ DrinkSchema.pre('save', function() {
     this.profitMargin = ((this.salePrice - this.costPerUnit) / this.costPerUnit) * 100;
   }
 
-  console.log(`totalBoxes después del hook: ${this.totalBoxes}`);
-  console.log(`totalUnits después del hook: ${this.totalUnits}`);
-  console.log(`--- FIN HOOK ---\n`);
-
-  // NO recalcular totalUnits automáticamente - cada operación lo maneja manualmente
+  // IMPORTANTE: Calcular totalUnits automáticamente basado en totalBoxes
+  this.totalUnits = this.totalBoxes * this.unitsPerBox;
 });
 
 // Eliminar el modelo del cache si existe para forzar recarga

@@ -155,8 +155,16 @@ export default function ViewDrinkPage() {
                   <p className="text-3xl font-bold text-blue-900">{drink.unitsPerBox}</p>
                 </div>
                 <div className="p-4 bg-indigo-50 rounded-lg">
-                  <p className="text-sm text-indigo-700">Total Cajas</p>
-                  <p className="text-3xl font-bold text-indigo-900">{drink.totalBoxes}</p>
+                  <p className="text-sm text-indigo-700">Cajas Completas</p>
+                  <p className="text-3xl font-bold text-indigo-900">
+                    {Math.floor(drink.totalUnits / drink.unitsPerBox)}
+                  </p>
+                </div>
+                <div className="p-4 bg-purple-50 rounded-lg">
+                  <p className="text-sm text-purple-700">Unidades Sueltas</p>
+                  <p className="text-3xl font-bold text-purple-900">
+                    {drink.totalUnits % drink.unitsPerBox}
+                  </p>
                 </div>
                 <div className={`p-4 rounded-lg ${
                   drink.totalUnits <= drink.lowStockAlert ? 'bg-red-50' : 'bg-green-50'

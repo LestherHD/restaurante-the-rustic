@@ -17,9 +17,8 @@ export async function POST(request: Request) {
     const previousBoxes = drink.totalBoxes;
     const previousUnits = drink.totalUnits;
 
-    // Actualizar cajas y unidades
+    // Actualizar solo las cajas - totalUnits se calculará automáticamente en el hook pre-save
     drink.totalBoxes += boxesToAdd;
-    drink.totalUnits += (boxesToAdd * drink.unitsPerBox);
 
     await drink.save();
 
