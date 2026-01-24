@@ -68,10 +68,14 @@ export async function POST(
 
     // Log de auditoría
     await logAudit({
-      action: 'UPDATE',
-      entity: 'Ingredient',
-      entityId: ingredient._id.toString(),
-      details: `Stock añadido: ${quantityPurchased} ${unitPurchased} (${quantityInOz.toFixed(2)} oz) - Costo: $${totalCost.toFixed(2)} - Nuevo CXO: $${averageCxo.toFixed(4)}`,
+      username: 'admin',
+      action: 'inventory_movement',
+      module: 'ingredients',
+      description: `Stock añadido: ${quantityPurchased} ${unitPurchased} (${quantityInOz.toFixed(2)} oz) - Costo: $${totalCost.toFixed(2)} - Nuevo CXO: $${averageCxo.toFixed(4)}`,
+      targetId: ingredient._id.toString(),
+      targetName: ingredient.name,
+      previousValue: { stock: ingredient.stockActual - quantityInOz, cxo: ingredient.cxo },
+      newValue: { stock: ingredient.stockActual, cxo: averageCxo },
     });
 
     return NextResponse.json({

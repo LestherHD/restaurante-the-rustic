@@ -51,10 +51,12 @@ export async function PUT(
 
     // Log de auditoría
     await logAudit({
-      action: 'UPDATE',
-      entity: 'Ingredient',
-      entityId: ingredient._id.toString(),
-      details: `Ingrediente actualizado: ${ingredient.name}`,
+      username: 'admin',
+      action: 'update',
+      module: 'ingredients',
+      description: `Ingrediente actualizado: ${ingredient.name}`,
+      targetId: ingredient._id.toString(),
+      targetName: ingredient.name,
     });
 
     return NextResponse.json(ingredient);
@@ -84,10 +86,12 @@ export async function DELETE(
 
     // Log de auditoría
     await logAudit({
-      action: 'DELETE',
-      entity: 'Ingredient',
-      entityId: ingredient._id.toString(),
-      details: `Ingrediente eliminado: ${ingredient.name}`,
+      username: 'admin',
+      action: 'delete',
+      module: 'ingredients',
+      description: `Ingrediente eliminado: ${ingredient.name}`,
+      targetId: ingredient._id.toString(),
+      targetName: ingredient.name,
     });
 
     return NextResponse.json({ message: 'Ingrediente eliminado' });

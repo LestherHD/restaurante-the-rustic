@@ -59,10 +59,12 @@ export async function POST(request: NextRequest) {
 
     // Log de auditoría
     await logAudit({
-      action: 'CREATE',
-      entity: 'Ingredient',
-      entityId: ingredient._id.toString(),
-      details: `Ingrediente creado: ${ingredient.name}`,
+      username: 'admin',
+      action: 'create',
+      module: 'ingredients',
+      description: `Ingrediente creado: ${ingredient.name}`,
+      targetId: ingredient._id.toString(),
+      targetName: ingredient.name,
     });
 
     return NextResponse.json(ingredient, { status: 201 });
