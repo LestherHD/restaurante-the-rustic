@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import dbConnect from '@/lib/mongodb';
 import Drink from '@/models/Drink';
 import InventoryMovement from '@/models/InventoryMovement';
+import { logAudit } from '@/lib/auditLog';
+import { getUsernameForAudit } from '@/lib/auth';
 
 export async function POST(request: Request) {
   try {
@@ -22,6 +24,9 @@ export async function POST(request: Request) {
 
     await drink.save();
 
+    // Obtener usuario autenticado
+    const username = await getUsernameForAudit();
+    
     // Registrar movimiento
     await InventoryMovement.create({
       drinkId: drink._id,
@@ -34,7 +39,30 @@ export async function POST(request: Request) {
       previousUnits,
       newUnits: drink.totalUnits,
       reason: reason || 'Ajuste de inventario',
-      createdBy: createdBy || 'Admin',
+      createdBy: username,
+    });
+
+    // Registrar en auditoría
+    await logAudit({
+      username,
+      action: 'inventory_movement',
+      module: 'drinks',
+      description: `${boxesToAdd > 0 ? 'Agregó' : 'Quitó'} ${Math.abs(boxesToAdd)} cajas de "${drink.name}": ${reason || 'Sin especificar'}`,
+      targetId: drink._id.toString(),
+      targetName: drink.name,
+      previousValue: {
+        boxes: previousBoxes,
+        units: previousUnits,
+      },
+      newValue: {
+        boxes: drink.totalBoxes,
+        units: drink.totalUnits,
+      },
+      metadata: {
+        boxesChanged: boxesToAdd,
+        unitsChanged: boxesToAdd * drink.unitsPerBox,
+        reason: reason,
+      },
     });
 
     return NextResponse.json({

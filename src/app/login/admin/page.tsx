@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Lock, User } from 'lucide-react';
+import Image from 'next/image';
 
 export default function AdminLoginPage() {
   const router = useRouter();
@@ -26,7 +27,7 @@ export default function AdminLoginPage() {
       const data = await response.json();
 
       if (response.ok) {
-        router.push('/admin/drinks');
+        router.push('/admin');
       } else {
         setError(data.error || 'Error al iniciar sesión');
       }
@@ -41,8 +42,14 @@ export default function AdminLoginPage() {
     <div className="min-h-screen bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-8">
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-indigo-100 rounded-full mb-4">
-            <Lock className="text-indigo-600" size={32} />
+          <div className="inline-flex items-center justify-center mb-4">
+            <Image 
+              src="/image-removebg-preview.png" 
+              alt="Logo The Rustic" 
+              width={120} 
+              height={120}
+              className="object-contain"
+            />
           </div>
           <h1 className="text-3xl font-bold text-gray-900">Panel de Administrador</h1>
           <p className="text-gray-600 mt-2">Ingresa tus credenciales</p>

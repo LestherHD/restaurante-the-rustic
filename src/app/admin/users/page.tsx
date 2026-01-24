@@ -122,43 +122,30 @@ export default function UsersPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      <header className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg">
-        <div className="max-w-7xl mx-auto px-4 py-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <button onClick={() => router.push('/admin/drinks')} className="p-2 hover:bg-white/10 rounded-lg transition">
-                <ArrowLeft size={24} />
-              </button>
-              <div>
-                <h1 className="text-3xl font-bold">👥 Gestión de Usuarios</h1>
-                <p className="text-indigo-100 mt-1">Administra cuentas de meseros y administradores</p>
-              </div>
+    <div className="min-h-screen bg-gray-50">
+      <header className="bg-white border-b border-gray-200">
+        <div className="max-w-7xl mx-auto px-6 py-6">
+          <div className="flex justify-between items-center">
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
+                <User size={28} />
+                Gestión de Usuarios
+              </h1>
+              <p className="text-gray-600 mt-1">Administra cuentas de meseros y administradores</p>
             </div>
             <button
-              onClick={handleLogout}
-              className="flex items-center gap-2 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
-            >
-              <LogOut size={20} />
-              Cerrar Sesión
-            </button>
-          </div>
-        </div>
-      </header>
-
-      <main className="max-w-7xl mx-auto px-4 py-8">
-        <div className="bg-white rounded-lg shadow">
-          <div className="p-6 border-b flex justify-between items-center">
-            <h2 className="text-xl font-bold text-gray-900">Usuarios Registrados</h2>
-            <button
               onClick={() => openModal()}
-              className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
+              className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 flex items-center gap-2"
             >
               <Plus size={20} />
               Nuevo Usuario
             </button>
           </div>
+        </div>
+      </header>
 
+      <main className="max-w-7xl mx-auto px-6 py-6">
+        <div className="bg-white rounded-lg shadow">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead className="bg-gray-50 border-b-2 border-gray-200">

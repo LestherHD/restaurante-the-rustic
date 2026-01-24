@@ -2,6 +2,8 @@
 
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
+import { useState } from 'react';
 import { 
   LayoutDashboard, 
   Wine, 
@@ -9,10 +11,12 @@ import {
   TrendingUp, 
   Users, 
   LogOut,
+  Activity,
+  Tag,
+  Package,
   Menu,
   X
 } from 'lucide-react';
-import { useState } from 'react';
 
 export default function AdminLayout({
   children,
@@ -20,33 +24,68 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const menuItems = [
     { icon: LayoutDashboard, label: 'Dashboard', href: '/admin' },
+    { icon: Package, label: 'Bodega', href: '/admin/ingredients' },
     { icon: Wine, label: 'Bebidas', href: '/admin/drinks' },
+    { icon: Tag, label: 'Menu Categorías', href: '/admin/categories' },
     { icon: ShoppingCart, label: 'Órdenes', href: '/admin/orders' },
     { icon: TrendingUp, label: 'Contabilidad', href: '/admin/accounting' },
     { icon: Users, label: 'Usuarios', href: '/admin/users' },
+    { icon: Activity, label: 'Auditoría', href: '/admin/audit' },
   ];
 
-  const handleLogout = () => {
-    // Implementar logout
+  const handleLogout = async () => {
+    await fetch('/api/auth/logout', { method: 'POST' });
     window.location.href = '/';
   };
 
   return (
-    <div className="flex h-screen bg-gray-100">
-      {/* Sidebar para desktop */}
-      <aside className="hidden md:flex md:flex-col md:w-64 bg-gradient-to-b from-purple-700 to-purple-900 text-white">
-        <div className="p-6 border-b border-purple-600">
-          <h1 className="text-2xl font-bold flex items-center gap-2">
-            🍹 The Rustic
-          </h1>
-          <p className="text-purple-200 text-sm mt-1">Panel Administrativo</p>
+    <div className="flex h-screen bg-gray-50 overflow-hidden">
+      {/* Mobile menu button */}
+      <button
+        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+        className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-white rounded-lg shadow-lg"
+      >
+        {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+      </button>
+
+      {/* Overlay para móvil */}
+      {isMobileMenuOpen && (
+        <div 
+          className="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-30"
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
+      )}
+
+      {/* Sidebar */}
+      <aside className={`
+        fixed lg:static inset-y-0 left-0 z-40
+        w-64 bg-white border-r border-gray-200 flex flex-col
+        transform transition-transform duration-300 ease-in-out
+        ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+      `}>
+        {/* Header */}
+        <div className="p-6 border-b border-gray-200">
+          <div className="flex items-center gap-3">
+            <Image 
+              src="/image-removebg-preview.png" 
+              alt="Logo The Rustic" 
+              width={50} 
+              height={50}
+              className="object-contain"
+            />
+            <div>
+              <h1 className="text-xl font-bold text-gray-900">The Rustic</h1>
+              <p className="text-sm text-gray-500 mt-1">Panel Administrativo</p>
+            </div>
+          </div>
         </div>
 
-        <nav className="flex-1 p-4 space-y-2">
+        {/* Navigation */}
+        <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
           {menuItems.map((item) => {
             const Icon = item.icon;
             const isActive = pathname === item.href || (item.href !== '/admin' && pathname.startsWith(item.href));
@@ -55,10 +94,11 @@ export default function AdminLayout({
               <Link
                 key={item.href}
                 href={item.href}
-                className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
+                onClick={() => setIsMobileMenuOpen(false)}
+                className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
                   isActive
-                    ? 'bg-white text-purple-700 font-semibold shadow-lg'
-                    : 'text-purple-100 hover:bg-purple-600 hover:text-white'
+                    ? 'bg-indigo-50 text-indigo-600 font-medium'
+                    : 'text-gray-700 hover:bg-gray-100'
                 }`}
               >
                 <Icon size={20} />
@@ -68,10 +108,11 @@ export default function AdminLayout({
           })}
         </nav>
 
-        <div className="p-4 border-t border-purple-600">
+        {/* Logout */}
+        <div className="p-4 border-t border-gray-200">
           <button
             onClick={handleLogout}
-            className="flex items-center gap-3 px-4 py-3 rounded-lg text-purple-100 hover:bg-red-600 hover:text-white transition-all w-full"
+            className="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors w-full"
           >
             <LogOut size={20} />
             <span>Cerrar Sesión</span>
@@ -79,68 +120,9 @@ export default function AdminLayout({
         </div>
       </aside>
 
-      {/* Sidebar móvil */}
-      {sidebarOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden" onClick={() => setSidebarOpen(false)}>
-          <aside className="absolute left-0 top-0 bottom-0 w-64 bg-gradient-to-b from-purple-700 to-purple-900 text-white" onClick={(e) => e.stopPropagation()}>
-            <div className="p-6 border-b border-purple-600 flex justify-between items-center">
-              <div>
-                <h1 className="text-2xl font-bold flex items-center gap-2">
-                  🍹 The Rustic
-                </h1>
-                <p className="text-purple-200 text-sm mt-1">Panel Admin</p>
-              </div>
-              <button onClick={() => setSidebarOpen(false)} className="text-white">
-                <X size={24} />
-              </button>
-            </div>
-
-            <nav className="flex-1 p-4 space-y-2">
-              {menuItems.map((item) => {
-                const Icon = item.icon;
-                const isActive = pathname === item.href || (item.href !== '/admin' && pathname.startsWith(item.href));
-                
-                return (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    onClick={() => setSidebarOpen(false)}
-                    className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
-                      isActive
-                        ? 'bg-white text-purple-700 font-semibold shadow-lg'
-                        : 'text-purple-100 hover:bg-purple-600 hover:text-white'
-                    }`}
-                  >
-                    <Icon size={20} />
-                    <span>{item.label}</span>
-                  </Link>
-                );
-              })}
-            </nav>
-
-            <div className="p-4 border-t border-purple-600">
-              <button
-                onClick={handleLogout}
-                className="flex items-center gap-3 px-4 py-3 rounded-lg text-purple-100 hover:bg-red-600 hover:text-white transition-all w-full"
-              >
-                <LogOut size={20} />
-                <span>Cerrar Sesión</span>
-              </button>
-            </div>
-          </aside>
-        </div>
-      )}
-
       {/* Contenido principal */}
-      <main className="flex-1 overflow-y-auto">
-        {/* Header móvil */}
-        <header className="md:hidden bg-white shadow-sm p-4 flex items-center gap-4">
-          <button onClick={() => setSidebarOpen(true)} className="text-gray-700">
-            <Menu size={24} />
-          </button>
-          <h1 className="text-xl font-bold text-gray-800">The Rustic</h1>
-        </header>
-
+      <main className="flex-1 overflow-y-auto w-full">
+        <div className="lg:hidden h-16" /> {/* Spacer para el botón de menú en móvil */}
         {children}
       </main>
     </div>

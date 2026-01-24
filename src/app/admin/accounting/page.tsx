@@ -63,39 +63,18 @@ export default function AccountingPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      <header className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg">
-        <div className="max-w-7xl mx-auto px-4 py-6">
-          <div className="flex justify-between items-center">
-            <div>
-              <h1 className="text-3xl font-bold">💰 Contabilidad de Ventas</h1>
-              <p className="text-indigo-100 mt-1">Reportes y estadísticas de ventas</p>
-            </div>
-            <div className="flex gap-3">
-              <button
-                onClick={() => router.push('/admin/users')}
-                className="bg-white text-indigo-600 px-4 py-2 rounded-lg hover:bg-indigo-50 font-semibold flex items-center gap-2"
-              >
-                <Users size={20} /> Usuarios
-              </button>
-              <button
-                onClick={() => router.push('/admin/drinks')}
-                className="bg-white text-indigo-600 px-4 py-2 rounded-lg hover:bg-indigo-50 font-semibold flex items-center gap-2"
-              >
-                <Package size={20} /> Inventario
-              </button>
-              <button
-                onClick={handleLogout}
-                className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 font-semibold flex items-center gap-2"
-              >
-                <LogOut size={20} /> Salir
-              </button>
-            </div>
-          </div>
+    <div className="min-h-screen bg-gray-50">
+      <header className="bg-white border-b border-gray-200">
+        <div className="max-w-7xl mx-auto px-6 py-6">
+          <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
+            <TrendingUp size={28} />
+            Contabilidad de Ventas
+          </h1>
+          <p className="text-gray-600 mt-1">Reportes y estadísticas de ventas</p>
         </div>
       </header>
 
-      <div className="max-w-7xl mx-auto px-4 py-6">
+      <main className="max-w-7xl mx-auto px-6 py-6">
         {/* Filtro de Período */}
         <div className="bg-white rounded-lg shadow p-4 mb-6">
           <div className="flex items-center gap-4">
@@ -236,7 +215,7 @@ export default function AccountingPage() {
             </div>
           )}
         </div>
-      </div>
+      </main>
     </div>
   );
 }

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Plus, Edit, Eye, Power, AlertTriangle, Package2, TrendingUp, LogOut, Users } from 'lucide-react';
+import { Plus, Edit, Eye, Power, AlertTriangle, Package2 } from 'lucide-react';
 import Image from 'next/image';
 import InventoryModal from '@/components/InventoryModal';
 
@@ -89,52 +89,24 @@ export default function DrinksListPage() {
     }
   };
 
-  const handleLogout = async () => {
-    await fetch('/api/auth/logout', { method: 'POST' });
-    router.push('/');
-  };
-
   const lowStockDrinks = drinks.filter(d => d.totalUnits <= d.lowStockAlert && d.isActive);
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      <header className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg">
-        <div className="max-w-7xl mx-auto px-4 py-6">
+    <div className="min-h-screen bg-gray-50">
+      <header className="bg-white border-b border-gray-200">
+        <div className="max-w-7xl mx-auto px-6 py-6">
           <div className="flex justify-between items-center">
             <div>
-              <h1 className="text-3xl font-bold">🍹 Inventario de Bebidas</h1>
-              <p className="text-indigo-100 mt-1">Gestión completa del catálogo</p>
+              <h1 className="text-2xl font-bold text-gray-900">Inventario de Bebidas</h1>
+              <p className="text-gray-600 mt-1">Gestión completa del catálogo</p>
             </div>
-            <div className="flex gap-3">
-              <button
-                onClick={() => router.push('/admin/accounting')}
-                className="bg-white text-indigo-600 px-4 py-2 rounded-lg hover:bg-indigo-50 font-semibold flex items-center gap-2"
-              >
-                <TrendingUp size={20} />
-                Contabilidad
-              </button>
-              <button
-                onClick={() => router.push('/admin/users')}
-                className="bg-white text-indigo-600 px-4 py-2 rounded-lg hover:bg-indigo-50 font-semibold flex items-center gap-2"
-              >
-                <Users size={20} />
-                Usuarios
-              </button>
-              <button
-                onClick={() => router.push('/admin/drinks/new')}
-                className="bg-white text-indigo-600 px-6 py-3 rounded-lg hover:bg-indigo-50 font-semibold flex items-center gap-2 shadow-lg"
-              >
-                <Plus size={20} />
-                Nueva Bebida
-              </button>
-              <button
-                onClick={handleLogout}
-                className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 flex items-center gap-2"
-              >
-                <LogOut size={20} />
-                Salir
-              </button>
-            </div>
+            <button
+              onClick={() => router.push('/admin/drinks/new')}
+              className="bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 font-semibold flex items-center gap-2 shadow-sm"
+            >
+              <Plus size={20} />
+              Nueva Bebida
+            </button>
           </div>
         </div>
       </header>

@@ -65,52 +65,51 @@ export default function InventoryModal({ drink, onClose, onSuccess }: InventoryM
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] flex flex-col">
+      <div className="bg-white rounded-lg shadow-xl max-w-xl w-full max-h-[90vh] flex flex-col">
         {/* Header Fijo */}
-        <div className="flex justify-between items-center p-6 border-b bg-gradient-to-r from-indigo-600 to-purple-600 rounded-t-xl">
-          <h2 className="text-2xl font-bold text-white">📦 Movimiento de Inventario</h2>
-          <button onClick={onClose} className="text-white hover:bg-white hover:bg-opacity-20 rounded-lg p-2 transition">
-            <X size={28} />
+        <div className="flex justify-between items-center p-4 border-b">
+          <div>
+            <h2 className="text-lg font-semibold text-gray-900">Movimiento de Inventario</h2>
+            <p className="text-sm text-gray-600 mt-1">{drink.name}</p>
+          </div>
+          <button onClick={onClose} className="text-gray-400 hover:text-gray-600 p-1 transition">
+            <X size={20} />
           </button>
         </div>
 
         {/* Contenido con Scroll */}
-        <div className="flex-1 overflow-y-auto p-8">
-          <div className="space-y-6">{/* Bebida */}
-          <div className="bg-gray-50 p-4 rounded-lg">
-            <p className="text-sm text-gray-600 mb-1">Bebida</p>
-            <p className="text-xl font-bold text-gray-900">{drink.name}</p>
-          </div>
+        <div className="flex-1 overflow-y-auto p-6">
+          <div className="space-y-4">
 
-          <div className="bg-indigo-50 p-6 rounded-xl border-2 border-indigo-200">
-            <p className="text-sm font-semibold text-indigo-900 mb-4">📊 Stock Actual</p>
-            <div className="grid grid-cols-3 gap-4 mb-4">
-              <div className="bg-white p-4 rounded-lg shadow-sm">
-                <p className="text-xs font-medium text-gray-600 mb-1">Cajas Completas</p>
-                <p className="text-3xl font-bold text-indigo-900">{currentCompleteBoxes}</p>
+          <div className="bg-gray-50 p-4 rounded-lg">
+            <p className="text-xs font-medium text-gray-600 mb-3">Stock Actual</p>
+            <div className="grid grid-cols-3 gap-3">
+              <div>
+                <p className="text-xs text-gray-500">Cajas Completas</p>
+                <p className="text-lg font-semibold text-gray-900">{currentCompleteBoxes}</p>
               </div>
-              <div className="bg-white p-4 rounded-lg shadow-sm">
-                <p className="text-xs font-medium text-gray-600 mb-1">Unidades Sueltas</p>
-                <p className="text-3xl font-bold text-purple-900">{currentLooseUnits}</p>
+              <div>
+                <p className="text-xs text-gray-500">Unidades Sueltas</p>
+                <p className="text-lg font-semibold text-gray-900">{currentLooseUnits}</p>
               </div>
-              <div className="bg-white p-4 rounded-lg shadow-sm">
-                <p className="text-xs font-medium text-gray-600 mb-1">Total Unidades</p>
-                <p className="text-3xl font-bold text-gray-900">{drink.totalUnits}</p>
+              <div>
+                <p className="text-xs text-gray-500">Total Unidades</p>
+                <p className="text-lg font-semibold text-gray-900">{drink.totalUnits}</p>
               </div>
             </div>
           </div>
 
           <div>
-            <label className="block text-base font-semibold text-gray-900 mb-3">
+            <label className="block text-xs font-medium text-gray-700 mb-2">
               Cajas a Agregar/Quitar
             </label>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
               <button
                 type="button"
                 onClick={() => setBoxesToAdd(Math.max(boxesToAdd - 1, minBoxesToRemove))}
-                className="w-16 h-16 bg-red-100 text-red-600 rounded-xl hover:bg-red-200 transition flex items-center justify-center shadow-md hover:shadow-lg"
+                className="w-10 h-10 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition flex items-center justify-center"
               >
-                <Minus size={32} />
+                <Minus size={20} />
               </button>
               <input
                 type="number"
@@ -119,49 +118,43 @@ export default function InventoryModal({ drink, onClose, onSuccess }: InventoryM
                   const value = parseInt(e.target.value) || 0;
                   setBoxesToAdd(Math.max(value, minBoxesToRemove));
                 }}
-                className="flex-1 px-6 py-4 border-2 border-gray-300 rounded-xl text-center text-3xl font-bold text-gray-900 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 shadow-sm"
+                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-center text-xl font-semibold text-gray-900 focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500"
               />
               <button
                 type="button"
                 onClick={() => setBoxesToAdd(boxesToAdd + 1)}
-                className="w-16 h-16 bg-green-100 text-green-600 rounded-xl hover:bg-green-200 transition flex items-center justify-center shadow-md hover:shadow-lg"
+                className="w-10 h-10 bg-green-50 text-green-600 rounded-lg hover:bg-green-100 transition flex items-center justify-center"
               >
-                <Plus size={32} />
+                <Plus size={20} />
               </button>
             </div>
-            <p className="text-sm text-gray-600 mt-2 text-center">
-              💡 Usa números negativos para quitar cajas (máximo {currentCompleteBoxes} disponibles)
+            <p className="text-xs text-gray-500 mt-1 text-center">
+              Usa números negativos para quitar cajas
             </p>
           </div>
 
           {boxesToAdd !== 0 && (
-            <div className={`p-6 rounded-xl border-2 ${boxesToAdd > 0 ? 'bg-green-50 border-green-300' : 'bg-red-50 border-red-300'}`}>
-              <p className={`text-sm mb-4 font-bold flex items-center gap-2 ${boxesToAdd > 0 ? 'text-green-700' : 'text-red-700'}`}>
-                {boxesToAdd > 0 ? '📈' : '📉'} Nuevo Stock
+            <div className={`p-3 rounded-lg border ${boxesToAdd > 0 ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'}`}>
+              <p className={`text-xs mb-2 font-medium ${boxesToAdd > 0 ? 'text-green-700' : 'text-red-700'}`}>
+                Nuevo Stock
               </p>
-              <div className="grid grid-cols-3 gap-4">
-                <div className="bg-white p-4 rounded-lg shadow-sm">
-                  <p className="text-xs text-gray-600 mb-1">Cajas Completas</p>
-                  <p className={`text-3xl font-bold ${boxesToAdd > 0 ? 'text-green-900' : 'text-red-900'}`}>
+              <div className="grid grid-cols-3 gap-3 text-sm">
+                <div>
+                  <p className="text-xs text-gray-600">Cajas</p>
+                  <p className={`font-semibold ${boxesToAdd > 0 ? 'text-green-900' : 'text-red-900'}`}>
                     {newCompleteBoxes}
                   </p>
-                  <p className="text-xs text-gray-500 mt-1">
-                    ({boxesToAdd > 0 ? '+' : ''}{boxesToAdd} cajas)
-                  </p>
                 </div>
-                <div className="bg-white p-4 rounded-lg shadow-sm">
-                  <p className="text-xs text-gray-600 mb-1">Unidades Sueltas</p>
-                  <p className={`text-3xl font-bold ${boxesToAdd > 0 ? 'text-green-900' : 'text-red-900'}`}>
+                <div>
+                  <p className="text-xs text-gray-600">Sueltas</p>
+                  <p className={`font-semibold ${boxesToAdd > 0 ? 'text-green-900' : 'text-red-900'}`}>
                     {newLooseUnits}
                   </p>
                 </div>
-                <div className="bg-white p-4 rounded-lg shadow-sm">
-                  <p className="text-xs text-gray-600 mb-1">Total Unidades</p>
-                  <p className={`text-3xl font-bold ${boxesToAdd > 0 ? 'text-green-900' : 'text-red-900'}`}>
+                <div>
+                  <p className="text-xs text-gray-600">Total</p>
+                  <p className={`font-semibold ${boxesToAdd > 0 ? 'text-green-900' : 'text-red-900'}`}>
                     {newTotalUnits}
-                  </p>
-                  <p className="text-xs text-gray-500 mt-1">
-                    ({boxesToAdd > 0 ? '+' : ''}{boxesToAdd * drink.unitsPerBox})
                   </p>
                 </div>
               </div>
@@ -169,36 +162,36 @@ export default function InventoryModal({ drink, onClose, onSuccess }: InventoryM
           )}
 
           <div>
-            <label className="block text-sm font-medium text-gray-900 mb-1">
+            <label className="block text-xs font-medium text-gray-700 mb-1">
               Razón del movimiento
             </label>
             <textarea
               value={reason}
               onChange={(e) => setReason(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-              rows={3}
-              placeholder="Ej: Compra de inventario, Ajuste por merma, etc."
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 text-sm focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500"
+              rows={2}
+              placeholder="Ej: Compra de inventario, Ajuste por merma"
             />
           </div>
           </div>
         </div>
 
         {/* Footer Fijo con Botones */}
-        <div className="border-t bg-gray-50 p-6 rounded-b-xl">
-          <div className="flex gap-4">
+        <div className="border-t p-4">
+          <div className="flex gap-3">
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 px-6 py-4 border-2 border-gray-300 rounded-xl text-gray-700 hover:bg-gray-100 font-semibold text-lg transition shadow-md hover:shadow-lg"
+              className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 text-sm font-medium transition"
             >
               Cancelar
             </button>
             <button
               onClick={handleSubmit}
               disabled={isLoading || boxesToAdd === 0}
-              className="flex-1 px-6 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl hover:from-indigo-700 hover:to-purple-700 font-semibold text-lg flex items-center justify-center gap-2 disabled:from-gray-400 disabled:to-gray-400 disabled:cursor-not-allowed transition shadow-lg hover:shadow-xl"
+              className="flex-1 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 text-sm font-medium flex items-center justify-center gap-2 disabled:bg-gray-400 disabled:cursor-not-allowed transition"
             >
-              <Save size={22} />
+              <Save size={16} />
               {isLoading ? 'Guardando...' : 'Guardar Movimiento'}
             </button>
           </div>

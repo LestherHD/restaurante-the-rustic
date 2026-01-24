@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import dbConnect from '@/lib/mongodb';
 import User from '@/models/User';
+import { logAudit } from '@/lib/auditLog';
 
 export async function POST(request: Request) {
   try {
@@ -64,6 +65,24 @@ export async function POST(request: Request) {
       sameSite: 'lax',
       maxAge: 60 * 60 * 24 * 7, // 7 días
     });
+
+    // Registrar inicio de sesión en auditoría
+    try {
+      console.log('=== INTENTANDO REGISTRAR EN AUDITORIA ===');
+      await logAudit({
+        username: user.username,
+        action: 'login',
+        module: 'auth',
+        description: `${user.name} (${user.role === 'admin' ? 'Administrador' : 'Mesero'}) inició sesión`,
+        metadata: {
+          role: user.role,
+          userId: user._id.toString(),
+        },
+      });
+      console.log('=== AUDITORIA REGISTRADA ===');
+    } catch (auditError) {
+      console.error('Error al registrar auditoría:', auditError);
+    }
 
     return response;
 

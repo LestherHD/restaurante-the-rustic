@@ -90,25 +90,30 @@ export default function OrdersPage() {
   }
 
   return (
-    <div className="p-8 space-y-6">
-      {/* Header */}
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">Órdenes</h1>
-          <p className="text-gray-600 mt-1">Gestión de pedidos</p>
+    <div className="min-h-screen bg-gray-50">
+      <header className="bg-white border-b border-gray-200">
+        <div className="max-w-7xl mx-auto px-6 py-6">
+          <div className="flex justify-between items-center">
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
+                <ShoppingCart size={28} />
+                Órdenes
+              </h1>
+              <p className="text-gray-600 mt-1">Gestión de pedidos</p>
+            </div>
+            <button
+              onClick={fetchOrders}
+              className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 flex items-center gap-2"
+            >
+              <RefreshCw size={20} />
+              Actualizar
+            </button>
+          </div>
         </div>
-        <button
-          onClick={fetchOrders}
-          className="flex items-center gap-2 bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors"
-        >
-          <RefreshCw size={20} />
-          Actualizar
-        </button>
-      </div>
+      </header>
 
-      {/* Lista de órdenes */}
-      <div className="grid gap-4">
-        {orders.length > 0 ? (
+      <main className="max-w-7xl mx-auto px-6 py-6">
+        <div className="grid gap-4">{orders.length > 0 ? (
           orders.map(order => (
             <div key={order._id} className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
               <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -249,6 +254,7 @@ export default function OrdersPage() {
           </div>
         </div>
       )}
+      </main>
     </div>
   );
 }
