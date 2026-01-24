@@ -4,18 +4,19 @@ import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useState } from 'react';
-import { 
-  LayoutDashboard, 
-  Wine, 
-  ShoppingCart, 
-  TrendingUp, 
-  Users, 
+import {
+  LayoutDashboard,
+  Wine,
+  ShoppingCart,
+  TrendingUp,
+  Users,
   LogOut,
   Activity,
   Tag,
   Package,
   Menu,
-  X
+  X,
+  Grid3x3
 } from 'lucide-react';
 
 export default function AdminLayout({
@@ -31,6 +32,7 @@ export default function AdminLayout({
     { icon: Package, label: 'Bodega', href: '/admin/ingredients' },
     { icon: Wine, label: 'Bebidas', href: '/admin/drinks' },
     { icon: Tag, label: 'Menu Categorías', href: '/admin/categories' },
+    { icon: Grid3x3, label: 'Mesas', href: '/admin/tables' },
     { icon: ShoppingCart, label: 'Órdenes', href: '/admin/orders' },
     { icon: TrendingUp, label: 'Contabilidad', href: '/admin/accounting' },
     { icon: Users, label: 'Usuarios', href: '/admin/users' },
@@ -54,7 +56,7 @@ export default function AdminLayout({
 
       {/* Overlay para móvil */}
       {isMobileMenuOpen && (
-        <div 
+        <div
           className="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-30"
           onClick={() => setIsMobileMenuOpen(false)}
         />
@@ -70,10 +72,10 @@ export default function AdminLayout({
         {/* Header */}
         <div className="p-6 border-b border-gray-200">
           <div className="flex items-center gap-3">
-            <Image 
-              src="/image-removebg-preview.png" 
-              alt="Logo The Rustic" 
-              width={50} 
+            <Image
+              src="/image-removebg-preview.png"
+              alt="Logo The Rustic"
+              width={50}
               height={50}
               className="object-contain"
             />
@@ -89,7 +91,7 @@ export default function AdminLayout({
           {menuItems.map((item) => {
             const Icon = item.icon;
             const isActive = pathname === item.href || (item.href !== '/admin' && pathname.startsWith(item.href));
-            
+
             return (
               <Link
                 key={item.href}

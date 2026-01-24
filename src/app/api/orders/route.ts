@@ -5,10 +5,17 @@ import Drink from '@/models/Drink';
 import Transaction from '@/models/Transaction';
 import InventoryMovement from '@/models/InventoryMovement';
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
     await dbConnect();
-    const orders = await Order.find({}).sort({ createdAt: -1 }).limit(50);
+    const { searchParams } = new URL(request.url);
+    const paymentStatus = searchParams.get('paymentStatus');
+
+    const filter: any = paymentStatus ? { paymentStatus } : {};
+    // Excluir órdenes canceladas
+    filter.status = { $ne: 'cancelled' };
+
+    const orders = await Order.find(filter).sort({ createdAt: -1 }).limit(50);
     return NextResponse.json(orders);
   } catch (error) {
     return NextResponse.json({ error: 'Error al obtener órdenes' }, { status: 500 });
@@ -98,17 +105,20 @@ export async function POST(request: Request) {
     const order = await Order.create({
       ...body,
       orderNumber,
+      paymentStatus: body.paymentStatus || 'paid',
     });
 
-    // Registrar transacción de ingreso
-    await Transaction.create({
-      type: 'income',
-      amount: body.total,
-      category: 'Ventas',
-      description: `Venta orden ${orderNumber}`,
-      orderId: order._id,
-      createdBy: body.waiterName,
-    });
+    // Registrar transacción de ingreso solo si está pagada
+    if (body.paymentStatus !== 'open') {
+      await Transaction.create({
+        type: 'income',
+        amount: body.total,
+        category: 'Ventas',
+        description: `Venta orden ${orderNumber}`,
+        orderId: order._id,
+        createdBy: body.waiterName,
+      });
+    }
 
     return NextResponse.json(order, { status: 201 });
   } catch (error) {

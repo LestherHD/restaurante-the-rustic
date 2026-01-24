@@ -113,8 +113,12 @@ DrinkSchema.pre('save', function() {
     this.profitMargin = ((this.salePrice - this.costPerUnit) / this.costPerUnit) * 100;
   }
 
-  // IMPORTANTE: Calcular totalUnits automáticamente basado en totalBoxes
-  this.totalUnits = this.totalBoxes * this.unitsPerBox;
+  // IMPORTANTE: Solo calcular totalUnits automáticamente si totalBoxes cambió
+  // Y NO si estamos en medio de una venta (cuando totalUnits ya fue modificado manualmente)
+  // Esto lo detectamos verificando si totalBoxes fue modificado pero totalUnits NO
+  if (this.isModified('totalBoxes') && !this.isModified('totalUnits')) {
+    this.totalUnits = this.totalBoxes * this.unitsPerBox;
+  }
 });
 
 // Eliminar el modelo del cache si existe para forzar recarga
