@@ -458,7 +458,7 @@ export default function WaiterPage() {
       const response = await fetch(`/api/orders/${orderId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'addItems', items: newItems }),
+        body: JSON.stringify({ action: 'addItems', items: newItems, addedBy: waiterName }),
       });
 
       if (response.ok) {
@@ -485,7 +485,7 @@ export default function WaiterPage() {
       const response = await fetch(`/api/orders/${orderId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'closeOrder', paymentStatus: 'paid' }),
+        body: JSON.stringify({ action: 'closeOrder', paymentStatus: 'paid', closedBy: waiterName }),
       });
 
       if (response.ok) {

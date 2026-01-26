@@ -4,6 +4,8 @@ import Order from '@/models/Order';
 import Drink from '@/models/Drink';
 import Transaction from '@/models/Transaction';
 import InventoryMovement from '@/models/InventoryMovement';
+import { logAudit } from '@/lib/auditLog';
+import { headers } from 'next/headers';
 
 export async function GET(request: Request) {
   try {
@@ -119,6 +121,42 @@ export async function POST(request: Request) {
         createdBy: body.waiterName,
       });
     }
+
+    // Registrar en auditoría
+    const headersList = await headers();
+    const userAgent = headersList.get('user-agent') || 'Unknown';
+    const itemsDescription = body.items.map((item: any) =>
+      `${item.quantity}x ${item.drinkName}`
+    ).join(', ');
+
+    await logAudit({
+      username: body.waiterName || 'Sistema',
+      action: 'create',
+      module: 'orders',
+      description: `Orden ${orderNumber} creada - Mesa: ${body.tableNumber || 'Mostrador'} - Items: ${itemsDescription}`,
+      targetId: order._id.toString(),
+      targetName: orderNumber,
+      newValue: {
+        orderNumber,
+        mesa: body.tableNumber || 'Mostrador',
+        mesero: body.waiterName,
+        items: body.items.map((item: any) => ({
+          bebida: item.drinkName,
+          cantidad: item.quantity,
+          precio: item.price,
+          subtotal: item.subtotal
+        })),
+        total: body.total,
+        estado: body.paymentStatus === 'open' ? 'Abierta' : 'Pagada',
+        notas: body.notes || ''
+      },
+      metadata: {
+        userAgent,
+        orderType: body.paymentStatus,
+        itemCount: body.items.length,
+        tableNumber: body.tableNumber
+      }
+    });
 
     return NextResponse.json(order, { status: 201 });
   } catch (error) {

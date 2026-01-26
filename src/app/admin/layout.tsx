@@ -33,7 +33,6 @@ export default function AdminLayout({
     { icon: Wine, label: 'Bebidas', href: '/admin/drinks' },
     { icon: Tag, label: 'Menu Categorías', href: '/admin/categories' },
     { icon: Grid3x3, label: 'Mesas', href: '/admin/tables' },
-    { icon: ShoppingCart, label: 'Órdenes', href: '/admin/orders' },
     { icon: TrendingUp, label: 'Contabilidad', href: '/admin/accounting' },
     { icon: Users, label: 'Usuarios', href: '/admin/users' },
     { icon: Activity, label: 'Auditoría', href: '/admin/audit' },

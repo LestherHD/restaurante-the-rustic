@@ -4,6 +4,8 @@ import Order from '@/models/Order';
 import Drink from '@/models/Drink';
 import Transaction from '@/models/Transaction';
 import InventoryMovement from '@/models/InventoryMovement';
+import { logAudit } from '@/lib/auditLog';
+import { headers } from 'next/headers';
 
 export async function PATCH(
   request: Request,
@@ -77,6 +79,33 @@ export async function PATCH(
       order.total += body.items.reduce((sum: number, item: any) => sum + item.subtotal, 0);
       await order.save();
 
+      // Registrar en auditoría
+      const headersList = await headers();
+      const userAgent = headersList.get('user-agent') || 'Unknown';
+      const itemsDescription = body.items.map((item: any) =>
+        `${item.quantity}x ${item.drinkName}`
+      ).join(', ');
+
+      await logAudit({
+        username: body.addedBy || 'Sistema',
+        action: 'update',
+        module: 'orders',
+        description: `Items agregados a orden ${order.orderNumber} - Mesa: ${order.tableNumber || 'Mostrador'} - Nuevos items: ${itemsDescription}`,
+        targetId: order._id.toString(),
+        targetName: order.orderNumber,
+        previousValue: { itemCount: order.items.length - body.items.length, total: order.total - body.items.reduce((sum: number, item: any) => sum + item.subtotal, 0) },
+        newValue: {
+          itemsAgregados: body.items.map((item: any) => ({
+            bebida: item.drinkName,
+            cantidad: item.quantity,
+            precio: item.price,
+            subtotal: item.subtotal
+          })),
+          nuevoTotal: order.total
+        },
+        metadata: { userAgent, action: 'addItems' }
+      });
+
       return NextResponse.json(order);
     }
 
@@ -121,11 +150,39 @@ export async function PATCH(
       order.status = 'cancelled';
       await order.save();
 
+      // Registrar en auditoría
+      const headersList = await headers();
+      const userAgent = headersList.get('user-agent') || 'Unknown';
+      const itemsDescription = order.items.map((item: any) =>
+        `${item.quantity}x ${item.drinkName}`
+      ).join(', ');
+
+      await logAudit({
+        username: body.cancelledBy || 'Sistema',
+        action: 'delete',
+        module: 'orders',
+        description: `Orden ${order.orderNumber} CANCELADA - Mesa: ${order.tableNumber || 'Mostrador'} - Items devueltos: ${itemsDescription}`,
+        targetId: order._id.toString(),
+        targetName: order.orderNumber,
+        previousValue: {
+          estado: 'abierta',
+          items: order.items.map((item: any) => ({
+            bebida: item.drinkName,
+            cantidad: item.quantity,
+            subtotal: item.subtotal
+          })),
+          total: order.total
+        },
+        newValue: { estado: 'cancelada', stockDevuelto: true },
+        metadata: { userAgent, action: 'cancelOrder', reason: 'Orden cancelada por usuario' }
+      });
+
       return NextResponse.json(order);
     }
 
     // Cerrar orden y marcar como pagada
     if (body.action === 'closeOrder') {
+      const previousStatus = order.paymentStatus;
       order.paymentStatus = body.paymentStatus || 'paid';
       await order.save();
 
@@ -137,9 +194,39 @@ export async function PATCH(
           category: 'Ventas',
           description: `Cierre de orden ${order.orderNumber}`,
           orderId: order._id,
-          createdBy: 'Sistema',
+          createdBy: body.closedBy || 'Sistema',
         });
       }
+
+      // Registrar en auditoría
+      const headersList2 = await headers();
+      const userAgent2 = headersList2.get('user-agent') || 'Unknown';
+      const itemsDescription2 = order.items.map((item: any) =>
+        `${item.quantity}x ${item.drinkName}`
+      ).join(', ');
+
+      await logAudit({
+        username: body.closedBy || 'Sistema',
+        action: 'update',
+        module: 'orders',
+        description: `Orden ${order.orderNumber} CERRADA Y PAGADA - Mesa: ${order.tableNumber || 'Mostrador'} - Items: ${itemsDescription2} - Total: Q${order.total.toFixed(2)}`,
+        targetId: order._id.toString(),
+        targetName: order.orderNumber,
+        previousValue: { estado: previousStatus },
+        newValue: {
+          estado: 'pagada',
+          mesero: order.waiterName,
+          mesa: order.tableNumber || 'Mostrador',
+          items: order.items.map((item: any) => ({
+            bebida: item.drinkName,
+            cantidad: item.quantity,
+            precio: item.price,
+            subtotal: item.subtotal
+          })),
+          total: order.total
+        },
+        metadata: { userAgent: userAgent2, action: 'closeOrder', transactionCreated: order.paymentStatus === 'paid' }
+      });
 
       return NextResponse.json(order);
     }

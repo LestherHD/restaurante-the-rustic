@@ -1,15 +1,16 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { 
-  TrendingUp, 
-  TrendingDown, 
-  DollarSign, 
-  Package, 
-  ShoppingCart, 
+import {
+  TrendingUp,
+  TrendingDown,
+  DollarSign,
+  Package,
+  ShoppingCart,
   AlertTriangle,
   Wine,
-  Users
+  Users,
+  RefreshCw
 } from 'lucide-react';
 
 interface Stats {
@@ -40,21 +41,42 @@ interface Stats {
 export default function AdminDashboard() {
   const [stats, setStats] = useState<Stats | null>(null);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
     fetchStats();
+
+    // Auto-actualizar cada 30 segundos
+    const interval = setInterval(() => {
+      fetchStats(true); // true = actualización silenciosa
+    }, 30000);
+
+    return () => clearInterval(interval);
   }, []);
 
-  const fetchStats = async () => {
+  const fetchStats = async (silent = false) => {
+    if (!silent) setLoading(true);
+    setRefreshing(true);
+
     try {
-      const response = await fetch('/api/stats');
+      const response = await fetch('/api/stats', {
+        cache: 'no-store', // Forzar actualización desde el servidor
+        headers: {
+          'Cache-Control': 'no-cache',
+        },
+      });
       const data = await response.json();
       setStats(data);
     } catch (error) {
       console.error('Error al cargar estadísticas:', error);
     } finally {
       setLoading(false);
+      setRefreshing(false);
     }
+  };
+
+  const handleRefresh = () => {
+    fetchStats();
   };
 
   if (loading) {
@@ -106,9 +128,21 @@ export default function AdminDashboard() {
   return (
     <div className="p-8 space-y-8">
       {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-        <p className="text-gray-600 mt-1">Resumen general del sistema</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
+          <p className="text-gray-600 mt-1">Resumen general del sistema</p>
+        </div>
+        <button
+          onClick={handleRefresh}
+          disabled={refreshing}
+          className={`flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors ${
+            refreshing ? 'opacity-50 cursor-not-allowed' : ''
+          }`}
+        >
+          <RefreshCw size={18} className={refreshing ? 'animate-spin' : ''} />
+          {refreshing ? 'Actualizando...' : 'Actualizar'}
+        </button>
       </div>
 
       {/* Tarjetas de estadísticas */}
@@ -142,7 +176,7 @@ export default function AdminDashboard() {
             <AlertTriangle className="text-red-500" size={24} />
             <h2 className="text-xl font-bold text-gray-900">Alertas de Stock</h2>
           </div>
-          
+
           {stats?.lowStockItems && stats.lowStockItems.length > 0 ? (
             <div className="space-y-3">
               {stats.lowStockItems.slice(0, 5).map(item => (
@@ -175,7 +209,7 @@ export default function AdminDashboard() {
             <ShoppingCart className="text-blue-500" size={24} />
             <h2 className="text-xl font-bold text-gray-900">Órdenes Recientes</h2>
           </div>
-          
+
           {stats?.recentOrders && stats.recentOrders.length > 0 ? (
             <div className="space-y-3">
               {stats.recentOrders.slice(0, 5).map(order => {
@@ -185,7 +219,7 @@ export default function AdminDashboard() {
                   ready: 'bg-green-100 text-green-700',
                   delivered: 'bg-gray-100 text-gray-700',
                 };
-                
+
                 return (
                   <div key={order._id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-200">
                     <div>
